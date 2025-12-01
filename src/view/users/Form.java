@@ -23,7 +23,7 @@ import model.User;
 public class Form extends JDialog{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private static Form form = new Form();
 
 	private JTextField jtfName;
@@ -38,7 +38,7 @@ public class Form extends JDialog{
 		createButtons();
 		registerListeners();
 		configure();
-	}	
+	}
 
 	private void configure(){
 		this.setResizable(false);
@@ -46,17 +46,19 @@ public class Form extends JDialog{
 		this.pack();
 		this.setLocationRelativeTo(this.getRootPane());
 	}
-	
+
 	private void createForms(){
 		JPanel jpForm = new JPanel(new GridLayout(2, 1, 0, 5));
 
 		jpForm.setBorder(BorderFactory.createTitledBorder("Dados Pessoais"));
 
 		jpForm.add(fieldset(new JLabel("Nome: "),
-				            jtfName = new JTextField(30)));
+                jtfName = new JTextField(30)));
+        jtfName.setName("nameField");
 
 		jpForm.add(fieldset(new JLabel("Login: "),
-							jtfLogin = new JTextField(30)));
+                jtfLogin = new JTextField(30)));
+        jtfLogin.setName("loginField");
 
 		this.add(jpForm, BorderLayout.CENTER);
 	}
@@ -68,16 +70,18 @@ public class Form extends JDialog{
 		}
 		return fieldset;
 	}
-	
+
 	private void createButtons(){
-		JPanel jpButtons = new JPanel();    
+		JPanel jpButtons = new JPanel();
 
 		jpButtons.add(jbSave = new JButton("Salvar"));
-		jpButtons.add(jbCancel = new JButton("Cancelar"));	
+        jbSave.setName("saveButton");
+		jpButtons.add(jbCancel = new JButton("Cancelar"));
+        jbCancel.setName("cancelButton");
 
-		this.add(jpButtons, BorderLayout.SOUTH);		
+		this.add(jpButtons, BorderLayout.SOUTH);
 	}
-	
+
 	private void registerListeners() {
 		jbSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -90,7 +94,7 @@ public class Form extends JDialog{
 			}
 		});
 	}
-	
+
 	private void cmdSave(){
 		try {
             if (userToUpdate == null) { // Modo de Criação
@@ -108,24 +112,24 @@ public class Form extends JDialog{
 			//e.printStackTrace();
 		}
 	}
-	
+
 	private void cmdCancel(){
 		dispose();
 	}
-	
+
 	private void clearForm(JTextComponent... jtcomponets){
 		for (JTextComponent component : jtcomponets) {
 			component.setText("");
 		}
 	}
-	
+
 	@Override
 	public void dispose(){
 		super.dispose();
 		clearForm(jtfName, jtfLogin);
 		this.userToUpdate = null;
 	}
-	
+
 	public static void toggle(){
 		form.setVisible(!form.isVisible());
 	}
