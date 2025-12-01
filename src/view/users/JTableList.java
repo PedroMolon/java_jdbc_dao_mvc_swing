@@ -58,8 +58,34 @@ public class JTableList extends JTable implements UserListener, EventListerner {
 	}
 
 	@Override
+	public void userUpdated(MailEvent<User> event) {
+		User updatedUser = event.getSource();
+		for (int i = 0; i < model.getRowCount(); i++) {
+			Long rowId = Long.parseLong((String) model.getValueAt(i, 0));
+			if (rowId.equals(updatedUser.getId())) {
+				model.setValueAt(updatedUser.getName(), i, 1);
+				model.setValueAt(updatedUser.getLogin(), i, 2);
+				break;
+			}
+		}
+	}
+
+	@Override
 	public void cmdEdit() {
-		System.out.println(this.getSelectedRow());
+		if (this.getSelectedRow() != -1) {
+            int row = this.getSelectedRow();
+            Long userId = Long.parseLong((String) this.getValueAt(row, 0));
+            try {
+                User user = UserController.getInstance().findById(userId);
+                    if (user != null) {
+                        Form.toggle(user);
+                    }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um usuário para editar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
 	}
 
 	@Override
@@ -78,7 +104,23 @@ public class JTableList extends JTable implements UserListener, EventListerner {
 	
 	@Override
 	public void cmdDetails() {
-		System.out.println(this.getSelectedRow());
+		if (this.getSelectedRow() != -1) {
+            int row = this.getSelectedRow();
+            Long userId = Long.parseLong((String) this.getValueAt(row, 0));
+            try {
+                User user = UserController.getInstance().findById(userId);
+                if (user != null) {
+                    String details = "ID: " + user.getId() + "\n";
+                    details += "Nome: " + user.getName() + "\n";
+                    details += "Login: " + user.getLogin();
+                    JOptionPane.showMessageDialog(this, details, "Detalhes do Usuário", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um usuário para ver os detalhes.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
 	}
 	
 	@Override

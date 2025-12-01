@@ -181,4 +181,19 @@ public class MysqlUserDao implements UserDao {
 		
 		return user;
 	}
+
+    @Override
+    public void update(User user) throws SQLException {
+        String sql = "UPDATE users SET name = ?, login = ? WHERE id = ?";
+        Connection c = DaoFactory.getDatabase().openConnection();
+        try (PreparedStatement stmt = c.prepareStatement(sql)) {
+            stmt.setString(1, user.getName());
+            stmt.setString(2, user.getLogin());
+            stmt.setLong(3, user.getId());
+            stmt.executeUpdate();
+        } finally {
+            c.close();
+        }
+    }
+
 }

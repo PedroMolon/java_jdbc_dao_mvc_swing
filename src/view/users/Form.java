@@ -28,6 +28,7 @@ public class Form extends JDialog{
 
 	private JTextField jtfName;
 	private JTextField jtfLogin;
+    private User userToUpdate = null;
 
 	private JButton jbSave;
 	private JButton jbCancel;
@@ -73,7 +74,8 @@ public class Form extends JDialog{
 
 		jpButtons.add(jbSave = new JButton("Salvar"));
 		jpButtons.add(jbCancel = new JButton("Cancelar"));	
-		this.add(jpButtons, BorderLayout.SOUTH);		
+
+		this.add(jpButtons, BorderLayout.SOUTH);		
 	}
 	
 	private void registerListeners() {
@@ -91,8 +93,14 @@ public class Form extends JDialog{
 	
 	private void cmdSave(){
 		try {
-			User user = new User(jtfName.getText(), jtfLogin.getText());
-			UserController.getInstance().save(user);
+            if (userToUpdate == null) { // Modo de Criação
+                User user = new User(jtfName.getText(), jtfLogin.getText());
+                UserController.getInstance().save(user, true); // isNew = true
+            } else { // Modo de Edição
+                userToUpdate.setName(jtfName.getText());
+                userToUpdate.setLogin(jtfLogin.getText());
+                UserController.getInstance().save(userToUpdate, false); // isNew = false
+            }
 			JOptionPane.showMessageDialog(this, "Usuário Salvo Com Sucesso", "", JOptionPane.INFORMATION_MESSAGE);
 			dispose();
 		} catch (SQLException e) {
@@ -115,9 +123,21 @@ public class Form extends JDialog{
 	public void dispose(){
 		super.dispose();
 		clearForm(jtfName, jtfLogin);
+		this.userToUpdate = null;
 	}
 	
 	public static void toggle(){
 		form.setVisible(!form.isVisible());
 	}
+
+    public void loadData(User user) {
+        this.userToUpdate = user;
+        jtfName.setText(user.getName());
+        jtfLogin.setText(user.getLogin());
+    }
+
+    public static void toggle(User user) {
+        form.loadData(user);
+        toggle();
+    }
 }

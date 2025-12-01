@@ -20,13 +20,21 @@ public class UserController {
 		return instance;
 	}
 	
-	public User save(User user) throws SQLException {
+	public User save(User user, boolean isNew) throws SQLException {
 		if (user != null) {
 			user.save();
-			notifyListeners(user);
+			if (isNew) {
+				notifyUserAddedListener(user);
+			} else {
+				notifyUserUpdatedListener(user);
+			}
 		}
 		return user;
 	}
+
+    public User findById(Long id) throws SQLException {
+        return User.findById(id);
+    }
 	
 	public void remove(Long userId) throws SQLException{
 		User user = User.findById(userId);
@@ -43,10 +51,17 @@ public class UserController {
 		}
 	}
 
-	private void notifyListeners(User user) {
+	private void notifyUserAddedListener(User user) {
 		MailEvent<User> event = new MailEvent<User>(user);
 		for (UserListener listener : userListeners) {
 			listener.useradd(event);
+		}
+	}
+
+	private void notifyUserUpdatedListener(User user) {
+		MailEvent<User> event = new MailEvent<User>(user);
+		for (UserListener listener : userListeners) {
+			listener.userUpdated(event);
 		}
 	}
 

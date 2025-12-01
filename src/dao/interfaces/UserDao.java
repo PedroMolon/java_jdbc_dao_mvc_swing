@@ -13,4 +13,5 @@ public interface UserDao {
 	int delete(User user) throws SQLException;
 	User findByLogin(String login) throws SQLException;
 	User findById(Long id) throws SQLException;
+    void update(User user) throws SQLException;
 }

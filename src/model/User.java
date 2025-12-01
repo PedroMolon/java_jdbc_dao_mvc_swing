@@ -64,7 +64,11 @@ public class User {
 	 * Method to save the current user in the database
 	 */
 	public void save() throws SQLException{
-		userDAO().insert(this);
+		if (this.getId() == null) {
+			userDAO().insert(this);
+		} else {
+			userDAO().update(this);
+		}
 	}
 	
 	/**

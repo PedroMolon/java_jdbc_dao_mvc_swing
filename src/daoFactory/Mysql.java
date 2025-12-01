@@ -10,15 +10,16 @@ import dao.interfaces.UserDao;
 public class Mysql extends DaoFactory {
 	
 	private static String url = "jdbc:mysql://127.0.0.1:3306/";
-	private static String database = "mailsystem";
-	private static String driver = "com.mysql.jdbc.Driver";
+	private static String database = "mailsystem"; // This line is now redundant but kept for clarity if needed elsewhere
+
+	private static String driver = "com.mysql.cj.jdbc.Driver";
 	private static String user = "root";
 	private static String password = "mysql";
 	
 	public Connection openConnection() {   
 		try {
 			Class.forName(driver).newInstance();
-			Connection connection = DriverManager.getConnection(url + database, user, password);
+			Connection connection = DriverManager.getConnection(url + database + "?useUnicode=true&characterEncoding=utf8", user, password);
 			return connection;
 		} catch (SQLException e) {
 			e.printStackTrace();
